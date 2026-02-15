@@ -30,9 +30,10 @@
 			
             window.viewer = OpenSeadragon({
 				id: "openseadragon-viewer",
-				tileSources: new OpenSeadragon.GeoTIFFTileSource({
+				tileSources: [{
+					type: 'geotiff',
 					url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif"
-				}),
+				}],
 				showNavigationControl: false,
 				defaultZoomLevel: 1
             });
