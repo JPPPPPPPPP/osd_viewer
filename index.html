@@ -20,26 +20,20 @@
         window.onload = function() {
             // This connects the plugin to OpenSeadragon
             
-			// Check if the plugin is already attached or needs manual activation
-			if (!OpenSeadragon.GeoTIFFTileSource) {
-				try {
-					// Try the manual activation function
-					enableGeoTIFFTileSource(OpenSeadragon);
-				} catch (e) {
-					console.log("Manual activation failed, checking if auto-loaded...");
-				}
+			if (window.GeoTIFFTileSource && typeof window.GeoTIFFTileSource.setup === "function") {
+				window.GeoTIFFTileSource.setup(OpenSeadragon);
+			} else {
+				enableGeoTIFFTileSource(OpenSeadragon); 
 			}
 
             window.viewer = OpenSeadragon({
 				id: "openseadragon-viewer",
 				tileSources: [{
 					type: 'geotiff',
-					url: "https://f000.backblazeb2.com/file/your-bucket/pyramid.tif",
-					crossOriginPolicy: 'Anonymous' 
+					url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif",
 				}],
-                showNavigationControl: false,
-                immediateRender: true,
-                defaultZoomLevel: 1
+				showNavigationControl: false,
+				defaultZoomLevel: 1
             });
 
             // Block interactions for Unity control
