@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OpenSeadragon Viewer</title>
+    <title>OSD VR Viewer</title>
     <style>
         body, html, #openseadragon-viewer {
             width: 100%; height: 100%; margin: 0; padding: 0;
@@ -13,41 +13,34 @@
 <body>
     <div id="openseadragon-viewer"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/geotiff"></script>
-    <script src="https://cdn.jsdelivr.net/npm/openseadragon-geotiff@1.0.1/dist/openseadragon-geotiff.js"></script>
+    <script src="openseadragon.min.js"></script>
+    <script src="geotiff.js"></script>
+    <script src="geotiff-tilesource.js"></script>
 
     <script>
-        window.viewer = null;
-
         window.onload = function() {
+            // This connects the plugin to OpenSeadragon
+            enableGeoTIFFTileSource(OpenSeadragon);
+
             window.viewer = OpenSeadragon({
                 id: "openseadragon-viewer",
-                tileSources: {
+                tileSources: [{
                     type: 'geotiff',
-                    url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif" 
-                },
+                    url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif"
+                }],
                 showNavigationControl: false,
                 immediateRender: true,
-                defaultZoomLevel: 1,
-                minZoomLevel: 1,
-                maxZoomLevel: 20,
-                
-                // QUALITY SETTINGS
-                minPixelRatio: 0.5,
-                imageSmoothingEnabled: true,
-                maxImageCacheCount: 200,
-                prerenderedSize: 3,
+                defaultZoomLevel: 1
             });
 
-            // BLOCK INTERACTION
+            // Block interactions for Unity control
             var cancelAction = function(e) { e.preventDefaultAction = true; };
             window.viewer.addHandler('canvas-drag', cancelAction);
             window.viewer.addHandler('canvas-click', cancelAction);
             window.viewer.addHandler('canvas-scroll', cancelAction);
         };
 
-        // The Zoom Function (x, y are 0-1)
+        // Zoom function
         window.relativeZoomAtPoint = function(x, y, multiplier) {
             if (window.viewer && window.viewer.viewport) {
                 var viewportPoint = window.viewer.viewport.viewerElementToViewportCoordinates(
@@ -56,13 +49,12 @@
                         y * window.viewer.container.clientHeight
                     )
                 );
-
                 window.viewer.viewport.zoomBy(multiplier, viewportPoint);
                 window.viewer.viewport.applyConstraints();
             }
         };
-        
-        // Reset function
+
+		// Map reset
         window.resetMap = function() {
             if (window.viewer && window.viewer.viewport) {
                 window.viewer.viewport.goHome(false);
