@@ -14,13 +14,21 @@
     <div id="openseadragon-viewer"></div>
 
     <script src="openseadragon.min.js"></script>
-    <script src="geotiff.min.js"></script>
     <script src="geotiff-tilesource.min.js"></script>
 
     <script>
         window.onload = function() {
             // This connects the plugin to OpenSeadragon
-            enableGeoTIFFTileSource(OpenSeadragon);
+            
+			// Check if the plugin is already attached or needs manual activation
+			if (!OpenSeadragon.GeoTIFFTileSource) {
+				try {
+					// Try the manual activation function
+					enableGeoTIFFTileSource(OpenSeadragon);
+				} catch (e) {
+					console.log("Manual activation failed, checking if auto-loaded...");
+				}
+			}
 
             window.viewer = OpenSeadragon({
                 id: "openseadragon-viewer",
