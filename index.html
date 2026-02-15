@@ -31,11 +31,12 @@
 			}
 
             window.viewer = OpenSeadragon({
-                id: "openseadragon-viewer",
-                tileSources: [{
-                    type: 'geotiff',
-                    url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif"
-                }],
+				id: "openseadragon-viewer",
+				tileSources: [{
+					type: 'geotiff',
+					url: "https://f000.backblazeb2.com/file/your-bucket/pyramid.tif",
+					crossOriginPolicy: 'Anonymous' 
+				}],
                 showNavigationControl: false,
                 immediateRender: true,
                 defaultZoomLevel: 1
