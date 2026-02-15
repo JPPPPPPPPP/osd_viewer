@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OpenSeadragon VR Viewer</title>
+    <title>OpenSeadragon Viewer</title>
     <style>
         body, html, #openseadragon-viewer {
             width: 100%; height: 100%; margin: 0; padding: 0;
@@ -12,45 +12,44 @@
 </head>
 <body>
     <div id="openseadragon-viewer"></div>
-    <script src="openseadragon.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/geotiff"></script>
+    <script src="https://cdn.jsdelivr.net/npm/openseadragon-geotiff@1.0.1/dist/openseadragon-geotiff.js"></script>
+
     <script>
         window.viewer = null;
 
         window.onload = function() {
             window.viewer = OpenSeadragon({
                 id: "openseadragon-viewer",
-				tileSources: "http://10.33.149.1:8000/image_tiles.dzi", 
-				showNavigationControl: false,
-				immediateRender: true, // Render the best tiles quickly
-				defaultZoomLevel: 1,
-				minZoomLevel: 1,
-				maxZoomLevel: 20,
-				
-				// QUALITY SETTINGS
-				minPixelRatio: 0.5,           // Default is 0.5. Keeping it low allows smoother transitions.
-				imageSmoothingEnabled: true,  // Set to TRUE for that smooth, native browser look.
-				maxImageCacheCount: 200,      // Keep more tiles in RAM for faster response.
-				prerenderedSize: 3,
+                tileSources: {
+                    type: 'geotiff',
+                    url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif" 
+                },
+                showNavigationControl: false,
+                immediateRender: true,
+                defaultZoomLevel: 1,
+                minZoomLevel: 1,
+                maxZoomLevel: 20,
+                
+                // QUALITY SETTINGS
+                minPixelRatio: 0.5,
+                imageSmoothingEnabled: true,
+                maxImageCacheCount: 200,
+                prerenderedSize: 3,
             });
 
-            // BLOCK INTERACTION (This part you confirmed works)
+            // BLOCK INTERACTION
             var cancelAction = function(e) { e.preventDefaultAction = true; };
             window.viewer.addHandler('canvas-drag', cancelAction);
             window.viewer.addHandler('canvas-click', cancelAction);
             window.viewer.addHandler('canvas-scroll', cancelAction);
         };
 
-        /**
-         * The Zoom Function
-         * x, y: UV (0-1) from Unity
-         */
+        // The Zoom Function (x, y are 0-1)
         window.relativeZoomAtPoint = function(x, y, multiplier) {
             if (window.viewer && window.viewer.viewport) {
-                // 1. Create a point from Unity's UVs
-                var unityPoint = new OpenSeadragon.Point(x, y);
-
-                // 2. Convert that "Screen" point to a "Viewport" point
-                // This correctly translates the 0-1 range to OSD's internal coordinate system
                 var viewportPoint = window.viewer.viewport.viewerElementToViewportCoordinates(
                     new OpenSeadragon.Point(
                         x * window.viewer.container.clientWidth, 
@@ -58,20 +57,17 @@
                     )
                 );
 
-                // 3. Zoom relative to that specific viewport point
                 window.viewer.viewport.zoomBy(multiplier, viewportPoint);
                 window.viewer.viewport.applyConstraints();
             }
         };
-		
-		// reset function to re-center the image
-		window.resetMap = function() {
-		if (window.viewer && window.viewer.viewport) {
-			// goHome(true) would snap instantly. 
-			// goHome(false) will animate smoothly back to full view.
-			window.viewer.viewport.goHome(false);
-		}
-};
+        
+        // Reset function
+        window.resetMap = function() {
+            if (window.viewer && window.viewer.viewport) {
+                window.viewer.viewport.goHome(false);
+            }
+        };
     </script>
 </body>
 </html>
