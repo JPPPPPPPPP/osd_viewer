@@ -20,10 +20,10 @@
         window.onload = function() {
             // This connects the plugin to OpenSeadragon
             
-			if (window.GeoTIFFTileSource && typeof window.GeoTIFFTileSource.setup === "function") {
-				window.GeoTIFFTileSource.setup(OpenSeadragon);
-			} else {
-				enableGeoTIFFTileSource(OpenSeadragon); 
+			if (window.GeoTIFFTileSource) {
+				if (typeof GeoTIFFTileSource.setup === 'function') {
+					GeoTIFFTileSource.setup(OpenSeadragon);
+				}
 			}
 
             window.viewer = OpenSeadragon({
