@@ -21,11 +21,11 @@
             // This connects the plugin to OpenSeadragon
             
 			if (window.GeoTIFFTileSource) {
-				if (typeof GeoTIFFTileSource.setup === 'function') {
-					GeoTIFFTileSource.setup(OpenSeadragon);
-				}
+				OpenSeadragon.GeoTIFFTileSource = window.GeoTIFFTileSource;
+			} else {
+				console.error("GeoTIFFTileSource script is missing or unloaded");
 			}
-
+			
             window.viewer = OpenSeadragon({
 				id: "openseadragon-viewer",
 				tileSources: [{
