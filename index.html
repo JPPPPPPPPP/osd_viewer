@@ -14,24 +14,25 @@
     <div id="openseadragon-viewer"></div>
 
     <script src="openseadragon.min.js"></script>
-    <script src="geotiff-tilesource.min.js"></script>
+	<script src="geotiff.js"></script> 
+	<script src="geotiff-tilesource.min.js"></script>
 
     <script>
         window.onload = function() {
             // This connects the plugin to OpenSeadragon
             
-			if (window.GeoTIFFTileSource) {
-				OpenSeadragon.GeoTIFFTileSource = window.GeoTIFFTileSource;
-			} else {
-				console.error("GeoTIFFTileSource script is missing or unloaded");
+			if (!window.GeoTIFFTileSource) {
+				console.error("GeoTIFFTileSource script is missing!");
+				return;
 			}
+			OpenSeadragon.GeoTIFFTileSource = window.GeoTIFFTileSource;
+			
 			
             window.viewer = OpenSeadragon({
 				id: "openseadragon-viewer",
-				tileSources: [{
-					type: 'geotiff',
-					url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif",
-				}],
+				tileSources: new OpenSeadragon.GeoTIFFTileSource({
+					url: "https://f003.backblazeb2.com/file/Tile-Pyramids/pyramid.tif"
+				}),
 				showNavigationControl: false,
 				defaultZoomLevel: 1
             });
