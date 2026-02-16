@@ -40,6 +40,12 @@
 				showRotationControl: false,
 				showSequenceControl: false,
 				
+				// Disable all internal mouse/touch/key handling because it screws with unity
+                gestureSettingsMouse: { clickToZoom: false, dblClickToZoom: false, mouseWheelZoom: false, dragToPan: false },
+                gestureSettingsTouch: { clickToZoom: false, dblClickToZoom: false, pinchToZoom: false, dragToPan: false },
+                gestureSettingsPen:   { clickToZoom: false, dblClickToZoom: false, pinchToZoom: false, dragToPan: false },
+                keyNavigationEnabled: false,
+				
 				// Performance & Behaviour
 				immediateRender: true,      
 				defaultZoomLevel: 1,
