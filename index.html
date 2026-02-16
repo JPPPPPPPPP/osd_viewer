@@ -1,69 +1,94 @@
-<script>
-    // Global reference for Unity/external calls
-    window.viewer = null;
-
-    window.onload = function() {
-        const r2DziUrl = "https://pub-daa4659d7be7460186628ce13278e3f6.r2.dev/CTC_tiles.dzi";
-
-        window.viewer = OpenSeadragon({
-            id: "openseadragon-viewer",
-            tileSources: r2DziUrl,
-            
-			// Remove Clickable UI
-			showNavigationControl: false,
-			showHomeControl: false,
-			showFullPageControl: false,
-			showZoomControl: false,
-			showRotationControl: false,
-			showSequenceControl: false,
-			
-            // Performance & Behaviour
-            immediateRender: true,      
-            defaultZoomLevel: 1,
-            minZoomLevel: 1,
-            maxZoomLevel: 20,
-            
-            // Performance & Quality Settings
-            minPixelRatio: 0.5,
-            imageSmoothingEnabled: true,
-            maxImageCacheCount: 200,
-            
-            // CORS
-            crossOriginPolicy: 'Anonymous',
-            loadTilesWithAjax: false, // Standard <img> tags are better for public R2
-            
-        });
-
-        // --- BLOCK DEFAULT INTERACTION ---
-        window.viewer.addHandler('open', function() {
-            var cancelAction = function(e) { e.preventDefaultAction = true; };
-            window.viewer.addHandler('canvas-drag', cancelAction);
-            window.viewer.addHandler('canvas-click', cancelAction);
-            window.viewer.addHandler('canvas-scroll', cancelAction);
-        });
-    };
-
-    /**
-     * Zoom Function External Input - basically just unity
-     */
-    window.relativeZoomAtPoint = function(x, y, multiplier) {
-        if (window.viewer && window.viewer.viewport) {
-            var viewerPoint = new OpenSeadragon.Point(
-                x * window.viewer.container.clientWidth, 
-                y * window.viewer.container.clientHeight
-            );
-            var viewportPoint = window.viewer.viewport.viewerElementToViewportCoordinates(viewerPoint);
-            window.viewer.viewport.zoomBy(multiplier, viewportPoint);
-            window.viewer.viewport.applyConstraints();
-        }
-    };
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSeadragon | R2 Viewer</title>
     
-    /**
-     * Reset function
-     */
-    window.resetMap = function() {
-        if (window.viewer && window.viewer.viewport) {
-            window.viewer.viewport.goHome(true); // Snap instantly
+    <script src="openseadragon.min.js"></script>
+
+    <style>
+        body, html, #openseadragon-viewer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
         }
-    };
-</script>
+    </style>
+</head>
+<body>
+    <div id="openseadragon-viewer"></div>
+
+	<script>
+		// Global reference for Unity/external calls
+		window.viewer = null;
+
+		window.onload = function() {
+			const r2DziUrl = "https://pub-daa4659d7be7460186628ce13278e3f6.r2.dev/CTC_tiles.dzi";
+
+			window.viewer = OpenSeadragon({
+				id: "openseadragon-viewer",
+				tileSources: r2DziUrl,
+				
+				// Remove Clickable UI
+				showNavigationControl: false,
+				showHomeControl: false,
+				showFullPageControl: false,
+				showZoomControl: false,
+				showRotationControl: false,
+				showSequenceControl: false,
+				
+				// Performance & Behaviour
+				immediateRender: true,      
+				defaultZoomLevel: 1,
+				minZoomLevel: 1,
+				maxZoomLevel: 20,
+				
+				// Performance & Quality Settings
+				minPixelRatio: 0.5,
+				imageSmoothingEnabled: true,
+				maxImageCacheCount: 200,
+				
+				// CORS
+				crossOriginPolicy: 'Anonymous',
+				loadTilesWithAjax: false, // Standard <img> tags are better for public R2
+				
+			});
+
+			// --- BLOCK DEFAULT INTERACTION ---
+			window.viewer.addHandler('open', function() {
+				var cancelAction = function(e) { e.preventDefaultAction = true; };
+				window.viewer.addHandler('canvas-drag', cancelAction);
+				window.viewer.addHandler('canvas-click', cancelAction);
+				window.viewer.addHandler('canvas-scroll', cancelAction);
+			});
+		};
+
+		/**
+		 * Zoom Function External Input - basically just unity
+		 */
+		window.relativeZoomAtPoint = function(x, y, multiplier) {
+			if (window.viewer && window.viewer.viewport) {
+				var viewerPoint = new OpenSeadragon.Point(
+					x * window.viewer.container.clientWidth, 
+					y * window.viewer.container.clientHeight
+				);
+				var viewportPoint = window.viewer.viewport.viewerElementToViewportCoordinates(viewerPoint);
+				window.viewer.viewport.zoomBy(multiplier, viewportPoint);
+				window.viewer.viewport.applyConstraints();
+			}
+		};
+		
+		/**
+		 * Reset function
+		 */
+		window.resetMap = function() {
+			if (window.viewer && window.viewer.viewport) {
+				window.viewer.viewport.goHome(true); // Snap instantly
+			}
+		};
+	</script>
+</body>
+</html>
